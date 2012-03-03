@@ -1,0 +1,122 @@
+/* Bootstrap shims */
+.navbar .container{ width:auto; }
+.navbar-inner{ border-radius:0; }
+.help-inline.label{ padding-left:5px; padding-right:5px; }
+.navbar + .subnav{ margin-top:-18px; margin-bottom:18px;}
+table form{ margin: 0; }
+.btn-group{ display:inline-block; margin:0;}
+.btn [class^=icon],
+.nav-pills a [class^=icon],
+.nav a [class^=icon]{ margin-right:8px; }
+.subnav .icon-spaced{ vertical-align:bottom; }
+
+/* Making these labels not be full width.  Requires a <br /> be added, the behaviour is superior */
+label.checkbox{ display:inline-block; }
+
+/* vertically centering labels to their respective input fields 
+   Appears to add vertical padding
+*/
+input[type=text] + span.label{ vertical-align:top;margin-top:2px; display:inline-block;}
+
+/* Applying the dropdown <a> styles to <input>s */
+.dropdown-menu input
+{	
+	background-color:transparent;
+	border:none;
+	border-radius:0;
+	box-shadow:none;
+	color: #555555;
+	font-weight: normal;
+	line-height: 18px;
+	margin:0;
+	padding: 3px 15px;
+	text-align:left;
+	white-space: nowrap;
+	width:100%;	
+}
+.dropdown-menu li > input:hover, 
+.dropdown-menu .active > input, 
+.dropdown-menu .active > input:hover
+{
+	color: #ffffff;
+	background-color: #0088cc;
+}
+
+/* Pulled from the Bootstrap docs */
+.subnav {
+    background-color: #EEEEEE;
+    background-image: -moz-linear-gradient(center top , #F5F5F5 0%, #EEEEEE 100%);
+    background-image: -webkit-linear-gradient(center top , #F5F5F5 0%, #EEEEEE 100%);
+    background-image: linear-gradient(center top , #F5F5F5 0%, #EEEEEE 100%);
+    border: 1px solid #D5D5D5;
+    border-width: 0 0 1px;
+    height: 36px;
+    width: 100%;
+    box-shadow: 0 1px 0 #FFFFFF inset, 0 1px 5px rgba(0, 0, 0, 0.1);
+    font-weight:900;
+}
+.subnav .nav
+{
+	margin-top: 0pt;
+	margin-right: auto;
+	margin-bottom: 0pt;
+	margin-left: auto;
+	padding-top: 0pt;
+	padding-right: 1px;
+	padding-bottom: 0pt;
+	padding-left: 1px;
+}
+.subnav .nav > li > a {
+    border-left: 1px solid #F5F5F5;
+    border-radius: 0 0 0 0;
+    border-right: 1px solid #E5E5E5;
+    margin: 0;
+    padding-bottom: 11px;
+    padding-top: 11px;
+}
+.subnav .nav > .active > a, 
+.subnav .nav > .active > a:hover {
+    background-color: #E9E9E9;
+    border-left: 0 none;
+    border-right-color: #DDDDDD;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05) inset;
+    color: #777777;
+    padding-left: 13px;
+}
+.subnav + .subnav{ 
+	background-image:none;
+	background-color:#FAFAFA;
+	font-weight:400;
+	margin-bottom:18px;
+	margin-top:-18px;
+}
+
+
+
+/* Changes to Bootstrap defaults */
+h1{ margin-bottom:0.5em; }
+label.checkbox{ cursor:pointer; }
+	label.checkbox:hover{ color:#000; }
+table.table tbody tr:hover td{
+	background-color:#e0f2ff;
+}
+
+/*
+ * General layout classes
+ */
+.hidden{ display:none; }
+
+/*
+ * Login form
+ */
+#login-form{ width:250px; }
+
+
+.approve-pending{
+	background-color:#F04;
+	border-radius:3px;
+	color:#FFF;
+	margin-left:3px;
+	padding:0 5px 1px;
+	text-shadow:none;
+}
