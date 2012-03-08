@@ -57,10 +57,19 @@ else:
 						</td>
 						<td>
 							<?php if($Order->inEditWindow()): ?>
-								<a href = "?id=<?php echo $Order->id; ?>" class = "btn">Edit order</a>
+								<a href = "?id=<?php echo $Order->id; ?>" class = "btn">
+									<?php echo Lang::out('btn:order_edit'); ?>
+								</a>
 							<?php else: ?>
-								<a href = "?id=<?php echo $Order->id; ?>">View order</a>&nbsp;&nbsp;
-								<a href = "<?php echo DIR_WEB; ?>/members/summary/?cycle=<?php echo $Order->Cycle->id; ?>">View summary</a>
+								<a href = "?id=<?php echo $Order->id; ?>" class = "btn">
+									<i class = "icon-eye-open"></i>
+									<?php echo Lang::out('btn:view'); ?>
+								</a>
+								&nbsp;&nbsp;
+								<a href = "<?php echo DIR_WEB; ?>/members/order/view/?id=<?php echo $Order->id; ?>&download" class = "btn">
+									<i class = "icon-download-alt"></i>
+									<?php echo Lang::out('btn:download'); ?>
+								</a>
 							<?php endif; ?>
 							
 						</td>
