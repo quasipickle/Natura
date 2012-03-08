@@ -678,6 +678,9 @@ SQL;
 		if(!$this->members)
 			$this->loadParticipatingMembers();
 		
+		if(!$this->members)
+			return FALSE;
+		
 		//a collection of all data for the order - to be used when generating the summary
 		//lots of duplication of data because it needs to be iterable in different ways
 		$data = array(
