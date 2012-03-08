@@ -56,7 +56,7 @@ if(isset($editing))
 						value = "<?php echo htmlentities($Category->id); ?>" 
 						<?php if(isset($this->categories[$Category->id])): ?>checked = "checked"<?php endif; ?>
 					/><?php echo $Category->name_hr; ?>
-				</label>
+				</label><br />
 			<?php endforeach; ?>
 		</div>
 	</div>
