@@ -74,7 +74,13 @@
 				<?php Lang::out('msg:order_edit_window_expired'); ?>
 				<br />
 				<br />
-				<a href = "<?php echo DIR_WEB; ?>/members/order/view"><?php Lang::out('btn:back_to_orders'); ?></a>
+				<a href = "<?php echo DIR_WEB; ?>/members/order/view/" class = "btn btn-primary">
+					<i class = "icon-arrow-left icon-white"></i><?php Lang::out('btn:back_to_orders'); ?>
+				</a>
+				<a href = "<?php echo DIR_WEB; ?>/members/order/view/?id=<?php echo $this->order_id; ?>&amp;download" class = "btn">
+					<i class = "icon-download-alt"></i>
+					<?php Lang::out('btn:download'); ?>
+				</a>
 			<?php else: ?>
 				<input type = "submit" name = "submit" value = "<?php 
 					if(isset($this->viewing_order)) 
