@@ -35,7 +35,9 @@
 					
 				</label>
 				<input type = "text" name = "phone" value = "<?php echo htmlentities($this->phone); ?>" tabindex="3"/>
-				<span class = "help-inline label label-info"><?php Lang::out('info:optional'); ?></small>
+				<span class = "help-inline">
+					<span class = "label label-info"><?php Lang::out('info:optional'); ?></span>
+				</span>
 			</div>
 		</div>
 		<div class = "row">			
