@@ -1,8 +1,4 @@
 <?PHP
-require DIR_CLASS.'/AdminController.php';
-require DIR_CLASS.'/Cycle.php';
-require_once DIR_CLASS.'/Producer.php';
-
 class PageController extends AdminController
 {
 	public $page_level = LEVEL_ADMIN;
