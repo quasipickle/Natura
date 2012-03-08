@@ -1,6 +1,4 @@
 <?PHP
-require DIR_CLASS.'/AdminController.php';
-require DIR_CLASS.'/ObjectList.php';
 
 class PageController extends AdminController
 {
