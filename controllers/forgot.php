@@ -68,6 +68,8 @@ class PageController extends Controller
 			
 			if($password != $confirm_password)
 				Error::set('signup.no_password_match');
+			else if(!strlen($password))
+				Error::set('signup.no_password');
 			else
 			{			
 				$Member = new Member();
