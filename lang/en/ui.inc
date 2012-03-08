@@ -72,7 +72,6 @@ $lang['ui']['menu:admin'] = 'Administration';
 # Members
 $lang['ui']['menu:place_order'] = 'Place order';
 $lang['ui']['menu:view_current_order'] = 'View your orders';
-$lang['ui']['menu:view_summaries'] = 'View your order summaries';
 $lang['ui']['menu:signup_producer'] = 'Signup as a Producer';
 
 # Producers
@@ -246,6 +245,7 @@ $lang['ui']['info:cycle_start'] = 'Format: YYYY-MM-DD.  Cycle will begin at midn
 $lang['ui']['info:cycle_end'] = 'Format: YYYY-MM-DD.  Cycle will end at 11:59:59 PM of this day.';
 $lang['ui']['msg:cycle_created'] = 'Cycle successfully created.';
 $lang['ui']['msg:cycle_emails_sent'] = 'Emails sent.';
+$lang['ui']['msg:cycle_no_orders'] = 'No orders were placed for that cycle.';
 $lang['ui']['lbl:cycle_id'] = 'ID';
 $lang['ui']['lbl:cycle_name'] = 'Name';
 $lang['ui']['lbl:cycle_start'] = 'Start';
@@ -278,11 +278,16 @@ $lang['ui']['info:no_past_orders'] = 'You have no orders to view.';
 $lang['ui']['info:no_past_order_summaries'] = 'You have no order summaries to view.';
 $lang['ui']['msg:order_saved'] = 'Order saved';
 $lang['ui']['msg:order_edit_window_expired'] = 'You cannot update this order because it was first placed more than 24 hours ago.';
-$lang['ui']['btn:back_to_orders'] = '&laquo; Back to your orders list';
+$lang['ui']['btn:back_to_orders'] = 'Back to your orders list';
+$lang['ui']['lbl:cycles_past'] = 'Past cycles';
+$lang['ui']['lbl:summary_num'] = 'Summary #';
+$lang['ui']['btn:download'] = 'Download';
+
 
 $lang['ui']['msg:order_placed'] = 'Your order has been placed. <a href = "'.DIR_WEB.'/members/order/view/?id=%ID%">View/Change your order</a>';
 $lang['ui']['btn:order_place'] = 'Place order';
 $lang['ui']['btn:order_update'] = 'Update order';
+$lang['ui']['btn:order_edit'] = 'Edit order';
 $lang['ui']['btn:order_show_ordered'] = 'Show only ordered products&hellip;';
 $lang['ui']['btn:order_show_all'] = 'Show all products';
 $lang['ui']['ttl:new_order'] = 'New order';
@@ -306,15 +311,6 @@ $lang['ui']['lbl:orders_individual'] = 'Individual orders';
 $lang['ui']['lbl:orders_download_csv'] = 'Download for spreadsheet (CSV)';
 $lang['ui']['lbl:orders_download_txt'] = 'Download as text';
 
-# Viewing order summaries
-$lang['ui']['ttl:summaries'] = 'Summaries';
-$lang['ui']['info:summaries'] = 'This page allows you to view/download order summaries from past order cycles.  Your summary for any active cycle will be available once the cycle has ended.';
-$lang['ui']['lbl:cycles_past'] = 'Past cycles';
-$lang['ui']['lbl:summary_num'] = 'Summary #';
-$lang['ui']['lbl:summary_download_csv'] = 'Download for spreadsheet (CSV)';
-$lang['ui']['lbl:summary_download_txt'] = 'Download as text';
-
-
 # Forgotten password
 $lang['ui']['ttl:forgot'] 				= 'Forgotten password';
 $lang['ui']['btn:forgot'] 				= 'Forgot password';
@@ -324,7 +320,7 @@ $lang['ui']['msg:forgot_email_sent'] 	= 'Email sent. It may take up to 4 hours t
 $lang['ui']['btn:reset_password'] 		= 'Reset my password';
 $lang['ui']['lbl:new_password'] 		= 'New password';
 $lang['ui']['lbl:confirm_password'] 	= 'Confirm password';
-$lang['ui']['msg:password_reset'] 		= 'Your password has been reset.  You can now <a href = "'.SITE_URL.'/login/">login</a>';
+$lang['ui']['msg:password_reset'] 		= 'Your password has been reset.  You can now <a href = "'.SITE_URL.'/login/">login</a>.';
 
 # Categories
 $lang['ui']['ttl:manage_categories'] = 'Manage Categories';
