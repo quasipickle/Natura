@@ -62,8 +62,6 @@ class PageController extends AdminController
 		$Cycle = new Cycle($_POST['cycle']);
 		if($Cycle->sendEmails())
 			$this->TPL->emails_sent = TRUE;
-		else
-			$this->TPL->message = Lang::get('msg:cycle_no_orders');
 	}
 	
 	
@@ -76,65 +74,59 @@ class PageController extends AdminController
 		
 		$files = array();
 		
-		# Only proceed if there were actual orders placed
-		if($Cycle->members)
+		# Generate the summary spreadsheet
+		$summary = $Cycle->generateSummary();
+		$files[] = $summary;
+		
+		# Generate the invoices
+		foreach($Cycle->members as $Member)
 		{
-			# Generate the summary spreadsheet
-			$summary = $Cycle->generateSummary();
-			$files[] = $summary;
+			$Order = $Member->loadOrder($cycle_id,'cycle');
+			$file = $Order->generateInvoice($type);
+			if($file)
+				$files[] = $file;
+		}
+
+		# Generate the purchase orders
+		foreach($Cycle->producers as $Producer)
+		{
+			$file = $Producer->generatePurchaseOrder($Cycle,$type);
+			if($file)
+				$files[] = $file;
+		}
+		
+		# Add the files to the zip file
+		if(!class_exists('ZipArchive'))
+			Error::set('zip.library_missing');
+		else
+		{
+			$Zip = new ZipArchive();
+			$filename = DIR_TMP.'/cycle_'.$cycle_id.'.zip';
 			
-			# Generate the invoices
-			foreach($Cycle->members as $Member)
+			if ($Zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
+				Error::set('zip.file_cannot_open');
+			else if(count($files))
 			{
-				$Order = $Member->loadOrder($cycle_id,'cycle');
-				$file = $Order->generateInvoice($type);
-				if($file)
-					$files[] = $file;
-			}
-	
-			# Generate the purchase orders
-			foreach($Cycle->producers as $Producer)
-			{
-				$file = $Producer->generatePurchaseOrder($Cycle,$type);
-				if($file)
-					$files[] = $file;
-			}
-			
-			# Add the files to the zip file
-			if(!class_exists('ZipArchive'))
-				Error::set('zip.library_missing');
-			else
-			{
-				$Zip = new ZipArchive();
-				$filename = DIR_TMP.'/cycle_'.$cycle_id.'.zip';
-				
-				if ($Zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
-					Error::set('zip.file_cannot_open');
-				else if(count($files))
+				foreach($files as $file)
 				{
-					foreach($files as $file)
-					{
-						$Zip->addFile($file,basename($file));
-					}
-				
-					if($Zip->close())
-					{	
-						header("Content-Type: application/zip");
-						header("Content-Length: ".filesize($filename));
-						header("Content-Disposition: attachment; filename=".basename($filename));
-						readfile($filename);
-						unlink($filename);
-						exit();
-					}
-					else
-						Error::set('zip.file_cannot_close');		
+					$Zip->addFile($file,basename($file));
+				}
+			
+				if($Zip->close())
+				{	
+					header("Content-Type: application/zip");
+					header("Content-Length: ".filesize($filename));
+					header("Content-Disposition: attachment; filename=".basename($filename));
+					readfile($filename);
+					unlink($filename);
+					exit();
 				}
 				else
-					Error::set('cycle.download.none');
+					Error::set('zip.file_cannot_close');		
 			}
-		}
-		else
-			$this->TPL->message = Lang::get('msg:cycle_no_orders');
+			else
+				Error::set('cycle.download.none');
+		}	
 	}
 	
 	private function loadCycles()
