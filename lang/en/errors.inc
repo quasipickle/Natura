@@ -199,9 +199,9 @@ $lang['err']['reset_retrieve_fail'] = 'The reset code could not be retrieved due
 $lang['err']['reset_retrieve_none'] = 'The reset code is not valid.  It may have been deleted because it expired.  Please <a href = "'.DIR_WEB.'/forgot/">submit another request to reset your password</a>.';
 $lang['err']['reset_generate_code_fail'] = 'A new reset code could not be created.';
 $lang['err']['reset_save_fail'] = 'The reset code could not be saved.';
-$lang['err']['load_member_by_email_fail'] = 'The ID of the member this code is for could not be found due to a database error';
-$lang['err']['load_member_by_email_none'] = "The provided code isn't associated with a member";
-$lang['err']['set_password_fail'] = 'Your password could not be set due to a database error';
+$lang['err']['load_member_by_email_fail'] = 'The ID of the member this code is for could not be found due to a database error.';
+$lang['err']['load_member_by_email_none'] = "The provided code isn't associated with a member.";
+$lang['err']['set_password_fail'] = 'Your password could not be set due to a database error.';
 
 
 #
