@@ -27,6 +27,6 @@
 		</label>
 		<input type = "text" name = "email" />
 		<br />
-		<input type = "submit" class = "btn-primary" name = "submit" value = "<?php Lang::outSafe('btn:forgot_submit'); ?>"/>
+		<input type = "submit" class = "btn" name = "submit" value = "<?php Lang::outSafe('btn:forgot_submit'); ?>"/>
 	</div>
 </form>
