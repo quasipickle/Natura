@@ -16,15 +16,8 @@
 		</a>
 	</h3>
 </p>
-<p>
-	<h3>
-		<a href = "<?php echo DIR_WEB; ?>/members/summary/">
-			<?php Lang::out('menu:view_summaries'); ?>
-		</a>
-	</h3>
-</p>
-<hr />
 <?php if(!$this->is_producer): ?>
+	<hr />
 	<p>
 		<h3>
 			<a href = "<?php echo DIR_WEB; ?>/signup/producer/">
