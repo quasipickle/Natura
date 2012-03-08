@@ -9,6 +9,8 @@ class PageController extends Controller
 	public $page_level = LEVEL_MEMBER;
 	public $template = 'members.order.view.tpl.php';
 	
+	public $Member;
+	
 	public function setup()
 	{
 		$this->TPL->assign(array(
@@ -20,54 +22,63 @@ class PageController extends Controller
 			'already_ordered'	=> TRUE
 			)
 		);
+		
+		$this->Member = new Member(Session::get(array('member','id')));
+			
 		parent::setup();
 	
-		$this->loadOrders();
 		
+	}
+	
+	public function process()
+	{	
+		/* If we're viewing one order, load it */
 		if(isset($_GET['id']))
 		{
 			$this->order_id = cleanGPC($_GET['id']);
 			$this->loadOrder();
 			$this->loadProducts();
 		}
+		
+		/* Otherwise, load all of the orders */
+		else
+			$this->loadOrders();	
+
+
+		if(isset($_POST['submit']))
+			$this->saveOrder();
+		if(isset($_GET['download']))
+			$this->downloadOrder();
 	}
 	
-	public function process()
-	{	
-		if(isset($_POST['load_order']))
+	public function saveOrder()
+	{
+		//Prepare the list
+		$list = array();
+		foreach($_POST['products'] as $product_id=>$count)
 		{
-			header('Location: '.SITE_URL.'/members/order/view/?id='.$_POST['active_cycles']);
-			exit();
+			$Item = new stdClass();
+			$Item->count = $count;
+			$list[$product_id] = $Item;
 		}
-		if(isset($_POST['submit']))
-		{
-			//Prepare the list
-			$list = array();
-			foreach($_POST['products'] as $product_id=>$count)
-			{
-				$Item = new stdClass();
-				$Item->count = $count;
-				$list[$product_id] = $Item;
-			}
+		
+		$Order = new Order($_POST['id']);
 			
-			$Order = new Order($_POST['id']);
+		# Order will fail to load if user reloads page - their
+		# old order id no longer exists.  However, reloading
+		# doesn't result in any new changes, so just silently do nothing
+		if(!$Order->loaded)
+		{
+			Error::clear();
+		}
+		else
+		{
+			if($Order->save($list,$this->cycle_id))
+			{
+				//redirect user to page for new order ID
+				header('Location: '.SITE_URL.'/members/order/view/?id='.$Order->id.'&saved');
+				exit();
 				
-			# Order will fail to load if user reloads page - their
-			# old order id no longer exists.  However, reloading
-			# doesn't result in any new changes, so just silently do nothing
-			if(!$Order->loaded)
-			{
-				Error::clear();
-			}
-			else
-			{
-				if($Order->save($list,$this->cycle_id))
-				{
-					//redirect user to page for new order ID
-					header('Location: '.SITE_URL.'/members/order/view/?id='.$Order->id.'&saved');
-					exit();
-					
-				}
 			}
 		}
 	}
@@ -145,7 +156,7 @@ SQL;
 	private function loadOrders()
 	{
 		$DB = DB::getInstance();
-		$member_id = $DB->escape(Session::get(array('member','id')));
+		$member_id = $DB->escape($this->Member->id);
 		
 		$query = <<<SQL
 			SELECT
@@ -185,7 +196,7 @@ SQL;
 	{	
 		$DB = DB::getInstance();
 	
-		$member_id = $DB->escape(Session::get(array('member','id')));
+		$member_id = $DB->escape($this->Member->id);
 		$order_id = cleanGPC($_GET['id']);
 	
 		$Order = new Order($order_id);
@@ -204,5 +215,32 @@ SQL;
 				));
 			}
 		}
-	}			
+	}
+	
+	##
+	# Function: loadPastOrder()
+	# Purpose: To load a previous order
+	# Parameters: $id (int): The ID to use to load the order
+	##
+	public function loadPastOrder($id)
+	{
+		$Order = $this->Member->loadOrder($id,'order');
+		if($Order)
+		{			
+			$this->TPL->Order = new _(array(
+				'id'                =>$Order->id,
+				'total'             =>$Order->total,
+				'items'             =>$Order->items,
+				'member_first_name' =>$Order->Member->first_name,
+				'member_last_name'  =>$Order->Member->last_name
+			));
+		}
+	}
+	
+	private function downloadOrder()
+	{
+		$this->loadPastOrder($this->order_id,'order');
+		$this->template = 'summary.txt.tpl.php';
+		$this->TPL->download = TRUE;
+	}	
 }
