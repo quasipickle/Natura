@@ -1,0 +1,12 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# tack on the trailing slash if it isn't there and the URL doesn't
+# have '.' in it (ie, leave files alone)
+#RewriteRule ^([^\.]*[^/])$ $1/ [R,L]
+
+
+# if the URL isn't a local file, internally redirect to index
+RewriteCond %{REQUEST_FILENAME}  !-s
+RewriteCond %{REQUEST_FILENAME}  !-d
+RewriteRule ^.*$ index.php
