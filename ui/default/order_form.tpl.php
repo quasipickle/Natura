@@ -2,73 +2,86 @@
 	<?php Lang::out('msg:order.none'); ?>
 <?php else: ?>
 	<form method = "post" action = "">
-		<div>
-			<input type = "hidden" name = "active_cycle" value = "<?php echo htmlentities($this->active_cycle); ?>" />
-			<?php if(isset($this->order_id)): ?>
-				<input type = "hidden" name = "id" value = "<?php echo $this->order_id; ?>" />
-			<?php endif; ?>
-		</div>		
-		<table class = "table table-striped" id = "products">
-			<?php foreach($this->products as $Producer): ?>
-				<thead>
-					<tr>
-						<th colspan = "4">
-							<h3>
-								<?php echo $Producer->name; ?>
-							</h3>
-						</th>	
-					</tr>				
-					<tr>
-						<th>
-							<?php Lang::out('lbl:product'); ?>
-						</th>
-						<td>
-							<?php Lang::out('lbl:product_name'); ?>
-						</th>
-						<td>
-							<?php Lang::out('lbl:available'); ?>
-						</th>
-						<th style = "width: 45px;">
-						</th>
-					</tr>
-				</thead>
-				<tbody>	
-					<?php foreach($Producer->products as $Product): ?>
-						<tr>
-							<td>
-								<?php echo $Product->name; ?>
-								<div class = "help-block"><?php echo $Product->description; ?></div>
-							</td>
-							<td>
-								$<?php echo number_format($Product->price,2); ?>/<?php echo $Product->units; ?>
-							</td>
-							<td>
-								<?php
-									if($Product->count != NULL):
-										echo $Product->count;
-									else:
-										Lang::out('info:inventory_unlimited');
-									endif;
-								?>
-							</td>
-							<td>
-								<?php if($this->order_can_be_updated): ?>
-									<input 
-										type = "text" 
-										name = "products[<?php echo $Product->id; ?>]"
-										class = "product span1" 
-										size = "3" 
-										value = "<?php if(isset($this->ordered_items[$Product->id])) echo $this->ordered_items[$Product->id]->count; ?>"/>
-								<?php else:
-										if(isset($this->ordered_items[$Product->id])) 
-											echo $this->ordered_items[$Product->id]->count;
-									  endif; ?>
-							</td>
-						</tr>	
-					<?php endforeach; ?>
-				</tbody>
-			<?php endforeach; ?>
-		</table>
+		<input type = "hidden" name = "active_cycle" value = "<?php echo htmlentities($this->active_cycle); ?>" />
+		<?php if(isset($this->order_id)): ?>
+			<input type = "hidden" name = "id" value = "<?php echo $this->order_id; ?>" />
+		<?php endif; ?>
+		<div class = "tabbable">
+			<ul class = "nav nav-tabs">
+				<?php foreach($this->products as $id => $Category): ?>
+					<li<?php if($id == 0): ?> class = "active" <?php endif; ?>>
+						<a href = "#category-<?php echo $id; ?>" data-toggle = "tab"><?php echo $Category->name; ?></a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<div class = "tab-content">
+				<?php foreach($this->products as $category_id => $Category): ?>
+					<div class = "tab-pane <?php if($category_id == 0): ?>active<?php endif; ?>" id = "category-<?php echo $category_id; ?>">
+						<table class = "table table-striped" id = "products">
+							<?php foreach($Category->products as $Producer): ?>
+								<thead>
+									<tr>
+										<th colspan = "4">
+											<h3>
+												<?php echo $Producer->name; ?><a href = "#" class = "hide-products btn btn-mini">Hide products</a><a href = "#" class = "show-products hidden btn btn-mini btn-success">Show products</a>
+											</h3>
+										</th>	
+									</tr>				
+									<tr>
+										<th>
+											<?php Lang::out('lbl:product'); ?>
+										</th>
+										<td>
+											<?php Lang::out('lbl:product_price'); ?>
+										</th>
+										<td>
+											<?php Lang::out('lbl:available'); ?>
+										</th>
+										<th style = "width: 45px;">
+										</th>
+									</tr>
+								</thead>
+								<tbody>	
+									<?php foreach($Producer->products as $Product): ?>
+										<tr>
+											<td>
+												<?php echo $Product->name; ?>
+												<div class = "help-block"><?php echo $Product->description; ?></div>
+											</td>
+											<td>
+												$<?php echo number_format($Product->price,2); ?>/<?php echo $Product->units; ?>
+											</td>
+											<td>
+												<?php
+													if($Product->count != NULL):
+														echo $Product->count;
+													else:
+														Lang::out('info:inventory_unlimited');
+													endif;
+												?>
+											</td>
+											<td>
+												<?php if($this->order_can_be_updated): ?>
+													<input 
+														type = "text" 
+														name = "products[<?php echo $Product->id; ?>]"
+														class = "product span1" 
+														size = "3" 
+														value = "<?php if(isset($this->ordered_items[$Product->id])) echo $this->ordered_items[$Product->id]->count; ?>"/>
+												<?php else:
+														if(isset($this->ordered_items[$Product->id])) 
+															echo $this->ordered_items[$Product->id]->count;
+													  endif; ?>
+											</td>
+										</tr>	
+									<?php endforeach; ?>
+								</tbody>
+							<?php endforeach; ?>
+						</table>
+					</div>
+				<?php endforeach; ?>
+			</div><!-- .tab-content -->
+		</div>
 		<div class = "form-actions">
 			<?php if($this->order_can_be_updated == FALSE): ?>
 				<?php Lang::out('msg:order_edit_window_expired'); ?>
