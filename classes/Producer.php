@@ -289,15 +289,13 @@ SQL;
 			return TRUE;
 	}
 	
-	## Parameters: $type ("txt" || "csv"): The format of the file
-	public function generatePurchaseOrder($Cycle,$type)
+	public function generatePurchaseOrder($Cycle,$download = FALSE)
 	{
 		$orders = $this->loadOrderAmounts($Cycle->id);
 		if(!$orders)
 			return FALSE;
 	
-		$TPL = new Template();
-		$TPL->assign(array(
+		$Info = new _(array(
 			'cycle_start_stamp'	=>$Cycle->start_stamp,
 			'cycle_end_stamp'	=>$Cycle->end_stamp,
 			'cycle_name'		=>$Cycle->name,
@@ -305,22 +303,18 @@ SQL;
 			'order_grand_total'	=>$this->order_grand_total,
 			'amounts'			=>$this->orders
 		));
-		
-		$output = ($type == 'txt') 
-					? $TPL->fetch('orders.txt.tpl.php')
-					: $TPL->fetch('orders.csv.tpl.php');
 	
-		$filename = ($type == 'txt')
-					? DIR_TMP.'/po - '.$this->business_name.'.txt'
-					: DIR_TMP.'/po - '.$this->business_name.'.csv';
-					
-		if(FALSE === file_put_contents($filename,$output))
+		$filename = cleanFilename("po - {$this->business_name}.xls");//in funclib.php
+		$file_path = DIR_TMP.'/'.$filename;		
+		include_once(DIR_TEMPLATE.'/purchase_order.php');
+		
+		if(!__generatePO($Info,$file_path,$download))
 		{
-			Error::set('producer.generate_purchase_order.fail',array('%ID%',$this->id));
+			Error::set('producer.generate_purchase_order.fail',array('%ID%'=>$this->id));
 			return FALSE;
 		}
 		else
-			return $filename;
+			return $file_path;
 	}
 	
 	
