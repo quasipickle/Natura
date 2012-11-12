@@ -6,7 +6,6 @@
 	it should be customizable.
 
 	This file must define 1 function: _generateSummary().
-	The function must force a download of the summary file.
 
 	The function must accept 1 array argument that contains:
 
@@ -20,8 +19,7 @@
 
 
 function _generateSummary($data,$file_path)
-{
-	
+{	
 	include_once 'libraries/phpexcel/PHPExcel.php';
 	$Excel = new PHPExcel();
 	$Excel->setActiveSheetIndex(0);
@@ -78,6 +76,7 @@ function summaryAddMembers(&$Excel,&$data)
 		if($row%4 == 0)
 		{
 			$end = abcInc('B',($num_products * 2)+1);//determine the letter of the last column.  +1 because we want to highlight the total row as well.
+			
 			$Excel->getActiveSheet()
 						->getStyle('A'.$row.':'.$end.($row+1))//+1 because we're colouring 2 rows
 							->getFill()
@@ -205,7 +204,7 @@ function summaryAddTotals(&$Excel,&$data)
 		$formula_cell = $Product->col_count.$product_total_row;
 		$start_cell = $Product->col_count.'4';
 		$end_cell = $Product->col_count.($product_total_row - 1);
-		
+			
 		$Excel->getActiveSheet()
 				->setCellValue($formula_cell,"=SUM($start_cell:$end_cell)")
 				->getStyle($formula_cell)
@@ -229,6 +228,73 @@ function summaryAddTotals(&$Excel,&$data)
 
 function abcInc($letter,$amount)
 {
-	return chr(ord($letter) + $amount);
+	if($amount < 0)
+		return abcDec($letter,$amount);
+		
+	for($i = 0; $i < $amount; $i++)
+	{
+		$letter++;
+	}
+	return $letter;
+}
+
+function abcDec($input,$increment)
+{
+	$values = array('A'	=>	1,
+					'B'	=>	2,
+					'C'	=>	3,
+					'D'	=>	4,
+					'E'	=>	5,
+					'F'	=>	6,
+					'G'	=>	7,
+					'H'	=>	8,
+					'I'	=>	9,
+					'J'	=>	10,
+					'K'	=>	11,
+					'L'	=>	12,
+					'M'	=>	13,
+					'N'	=>	14,
+					'O'	=>	15,
+					'P'	=>	16,
+					'Q'	=>	17,
+					'R'	=>	18,
+					'S'	=>	19,
+					'T'	=>	20,
+					'U'	=>	21,
+					'V'	=>	22,
+					'W'	=>	23,
+					'X'	=>	24,
+					'Y'	=>	25,
+					'Z'	=>	26);
+	$letters = array_flip($values);
+	
+	# Convert to base10 equivalent
+	$input = strrev($input);
+	$input_int = 0;
+	for($i = 0;$i < strlen($input);$i++)
+	{
+		$input_int += $values[$input{$i}] * (pow(26,$i));
+	}	
+
+	
+	# Increment	
+	$output_int = $input_int + $increment;
+	
+	
+	# Convert back into base 26, and back to letters
+	$max_magn = floor($output_int/26);
+	$output = '';
+	$running = $output_int;
+	
+	for($i = $max_magn;$i >= 0;$i--)
+	{
+		$magn = pow(26,$i);
+		$r = floor($running/$magn);
+		
+		$output = $output.$letters[$r];
+		$running = floor($running%$magn);
+	}
+	
+	return $output;
 }
 
