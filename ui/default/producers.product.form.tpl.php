@@ -70,21 +70,23 @@
 						type = "checkbox" 
 						name = "categories[<?php echo $Category->id; ?>]"
 						id = "category_<?php echo $Category->id; ?>"
-						value = "<?php echo htmlentities($Category->id); ?>" 
+						value = "<?php echo htmlentities($Category->name_hr); ?>" 
 						<?php if(isset($this->categories[$Category->id])): ?>checked = "checked"<?php endif; ?>/> 
 						<?php echo $Category->name_hr; ?>
 				</label><br />
 			<?php endforeach; ?>
 		</div>
 	<?php endif; ?>
-	<div class = "form-actions">
-		<?php if(isset($editing)): ?>
-			<input type = "submit" name = "edit" class = "btn" value = "<?php Lang::outSafe('btn:product_save'); ?>" />
-			<input type = "hidden" name = "id" value = "<?php echo htmlentities($this->id); ?>" />
-		<?php else: ?>
-			<input type = "submit" name = "create" class = "btn" value = "<?php Lang::outSafe('btn:create_product'); ?>" />
-		<?php endif; ?>
-	</div>
+	<?php if(!isset($hide_buttons)): # Will be set if loading for a modal window ?>
+		<div class = "form-actions">
+			<?php if(isset($editing)): ?>
+				<input type = "submit" name = "edit" class = "btn" value = "<?php Lang::outSafe('btn:product_save'); ?>" />
+				<input type = "hidden" name = "id" value = "<?php echo htmlentities($this->id); ?>" />
+			<?php else: ?>
+				<input type = "submit" name = "create" class = "btn" value = "<?php Lang::outSafe('btn:create_product'); ?>" />
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
 </form>
 
 <script type = "text/javascript" src = "<?php echo DIR_TEMPLATE_WEB; ?>/js/product.form.js"></script>
