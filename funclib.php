@@ -3,7 +3,7 @@
 #
 # funclib.php
 #
-# Random functions used in the development of Natura 
+# Random functions that didn't fit anywhere else
 #
 
 
@@ -75,4 +75,96 @@ function escapeForCSV($value)
 	return str_replace('"','""',$value);
 }
 
+##
+# Function: generateOrderProductList()
+# Purpose: To generate the array of categories, producers & products used by the order form template
+# Parameters: A DBResult object of a query that asked for product ids, product producer ids, and producer names
+# Returns: A massive array:
+/*
+	[category id] => Object(
+		'name' => Category name,
+		'products' => array(
+			[producer id] => Object(
+				'name'	=> Producer name,
+				'products' => array(
+					product_id => Product object
+				)
+			)...
+		)...
+	)...
+
+	Each category contains an array of producers who have at least 1 product in that category.
+	Each producer contains an array of products they have in that category
+	
+	There is a special "0" category that contains all producers and products in the cycle
+*/
+function generateOrderProductList($Result)
+{
+	$products = array();
+	$sorted = array(0 => new _(array('name'=>'All','products'=>array())));
+	
+	foreach($Result as $Row)
+	{
+		# make product if it hasn't already been loaded
+		if(!isset($products[$Row->id]))
+			$products[$Row->id] =  new Product($Row->id);
+		
+		foreach($products[$Row->id]->categories as $Category)
+		{
+			# make Category entry if it doesn't exist
+			if(!isset($sorted[$Category->id]))
+			{
+				$sorted[$Category->id] = new _(array(
+					'name'     => $Category->name_hr,
+					'products' => array()
+				));
+			}
+		
+			# make producer entry if it doesn't exist
+			if(!isset($sorted[$Category->id]->products[$Row->producer_id]))
+			{
+				$sorted[$Category->id]->products[$Row->producer_id] = new _(array(
+						'name'     => $Row->producer_name,
+						'products' => array()
+					));
+			}
+			
+			# make producer entry in "every" category if it doesn't exist
+			if(!isset($sorted[0]->products[$Row->producer_id]))
+			{
+				$sorted[0]->products[$Row->producer_id] = new _(array(
+						'name'     => $Row->producer_name,
+						'products' => array()
+					));
+			}
+			
+			# add product to this category & producer
+			$sorted[$Category->id]->products[$Row->producer_id]->products[] = $products[$Row->id];
+			
+			# add product to the "every" category
+			if(!isset($sorted[0]->products[$Row->producer_id]->products[$Row->id]))
+				$sorted[0]->products[$Row->producer_id]->products[$Row->id] = $products[$Row->id];
+		}
+	}
+	
+	# sort by category name
+	uasort($sorted,'orderListCategoryCompare');
+	return $sorted;
+}
+# Only used by generateOrderProductList
+function orderListCategoryCompare($A,$B)
+{
+	if($A->name > $B->name)
+		return 1;
+	else if($A->name < $B->name)
+		return -1;
+	else
+		return 0;
+}
+
+function cleanFilename($value)
+{
+	$allowed = 'a-zA-Z0-9 \,!@#$%^().-';
+	return preg_replace('/[^'.$allowed.']?/','',$value);
+}
 ?>
