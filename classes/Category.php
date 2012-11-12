@@ -77,7 +77,7 @@ SQL;
 	public function delete()
 	{
 		$db_id = $this->DB->escape($this->id);
-		
+			
 		$query = <<<SQL
 			DELETE
 			FROM
@@ -88,11 +88,12 @@ SQL;
 		$Result = $this->DB->execute($query);
 		if(!$Result)
 		{
+			echo $query;
 			Error::set('category_delete_fail');
 			return FALSE;
 		}
 		else
-			return $this->deleteProductAssociations();					
+			return $this->deleteProductAssociations();				
 	}
 	
 	public function deleteProductAssociations()

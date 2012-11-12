@@ -4,8 +4,8 @@ class Cycle
 {
 	public $id;
 	public $name;
-	public $start = FALSE;
-	public $start_stamp;
+	public $start = FALSE;// MySQL datetime format
+	public $start_stamp;// UNIX format
 	public $end = FALSE;
 	public $end_stamp;
 	//keyed numerically, values are Category objects
@@ -289,7 +289,7 @@ SQL;
 			Error::set('cycle.load_current.error');
 		else if($Result->numRows() > 0)
 		{
-			$Row = $Result->getRow();
+			$Row 				= $Result->getRow();
 			$this->id 			= $Row->id;
 			$this->name 		= $Row->name;
 			$this->start 		= $Row->start;
@@ -674,7 +674,7 @@ SQL;
 	}
 	
 	public function generateSummary()
-	{
+	{	
 		if(!$this->members)
 			$this->loadParticipatingMembers();
 		

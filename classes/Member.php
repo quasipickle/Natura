@@ -220,6 +220,7 @@ SQL;
 			WHERE
 				`id` = '$db_id'
 SQL;
+
 		$Result = $this->DB->execute($query);
 		if(!$Result)
 		{
