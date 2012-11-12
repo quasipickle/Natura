@@ -9,6 +9,11 @@
 		<link rel = "stylesheet" type = "text/css" href = "<?php echo DIR_TEMPLATE_WEB; ?>/bootstrap/css/bootstrap.min.css" />
 		<link rel = "stylesheet" type = "text/css" href = "<?php echo DIR_TEMPLATE_WEB; ?>/style.css" />
 		
+		
+		<script type = "text/javascript">
+			var DIR_WEB 			= '<?php echo DIR_WEB; ?>',
+				DIR_TEMPLATE_WEB 	= '<?php echo DIR_TEMPLATE_WEB; ?>';
+		</script>
 		<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type = "text/javascript" src = "<?php echo DIR_TEMPLATE_WEB; ?>/bootstrap/js/bootstrap.min.js"></script>
 		<script type = "text/javascript" src = "<?php echo DIR_TEMPLATE_WEB; ?>/js/script.js"></script>
@@ -133,12 +138,17 @@
 									<a class = "dropdown-toggle" data-toggle = "dropdown" href = "#"><i class = "icon-spaced icon-list"></i>User lists&nbsp;<span class = "caret"></span></a>
 									<ul class = "dropdown-menu">
 										<li>
-											<a href = "<?php echo DIR_WEB; ?>/admin/users/?members">Members</a>
+											<a href = "<?php echo DIR_WEB; ?>/admin/users/?members"><?php Lang::out('menu:members'); ?></a>
 										</li>
 										<li>
-											<a href = "<?php echo DIR_WEB; ?>/admin/users/?producers">Producers</a>
+											<a href = "<?php echo DIR_WEB; ?>/admin/users/?producers"><?php Lang::out('menu:producers'); ?></a>
 										</li>
 									</ul>
+								</li>
+								<li>
+									<a href = "<?php echo DIR_WEB; ?>/admin/homepage/">
+										<i class = "icon-home"></i><?php Lang::out('menu:homepage'); ?>
+									</a>
 								</li>
 								<?php if(isset($this->pending_memberships)): ?>
 									<li>
