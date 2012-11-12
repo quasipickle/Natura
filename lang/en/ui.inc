@@ -27,6 +27,7 @@ $lang['ui']['info:signup_terms'] = <<<TERMS
 </ol>
 TERMS;
 $lang['ui']['lbl:membership_term_agree'] = 'I agree to the terms of membership.';
+$lang['ui']['btn:cancel'] = 'Cancel';
 
 
 # Text to display on the login button & link
@@ -86,6 +87,7 @@ $lang['ui']['menu:manage_cycles'] = 'Cycles';
 $lang['ui']['menu:manage_categories'] = 'Categories';
 $lang['ui']['menu:approve_memberships'] = 'Approve memberships';
 $lang['ui']['menu:approve_producers'] = 'Approve producers';
+$lang['ui']['menu:homepage'] = 'Homepage';
 
 
 
@@ -256,24 +258,23 @@ $lang['ui']['info:cycle_category'] = 'Check as many categories as you want.  Onl
 
 # Ordering
 $lang['ui']['info:order'] = <<<ABOUT
-This page allows you to place an order for the current order cycle.  Your order can be changed for 24 hours after it is first placed, or until the order cycle closes.
+This page allows you to place an order for the current order cycle.  Your order can be changed for up to 24 hours after it is first placed, or until the order cycle closes - whichever occurs first.
 ABOUT;
 $lang['ui']['info:order_view'] = <<<ABOUT
-This page allows you to view and change an order you've already placed.  Orders can be changed for 24 hours after they are first placed, or until the order cycle closes.
+This page allows you to view and change an order you've already placed.  Your order can be changed for up to 24 hours after it is first placed, or until the order cycle closes - whichever occurs first.
 ABOUT;
 $lang['ui']['lbl:cycle_choose'] = 'Choose an order cycle';
 $lang['ui']['info:order_cycle_list'] = 'Choose a cycle to view your order for that cycle.';
 $lang['ui']['btn:load_cycle_products'] = 'Show the Products available for the Cycle';
 $lang['ui']['btn:show_order_for_cycle'] = 'Show my order for this cycle';
-$lang['ui']['msg:order_already'] = 'You have already placed an order for this cycle. <a href = "'.DIR_WEB.'/members/order/view">View your existing order &raquo;</a>.';
+$lang['ui']['msg:order_already'] = 'You have already placed an order for this cycle. <a href = "'.DIR_WEB.'/members/order/view/?id=%ID%">View your existing order &raquo;</a>';
 $lang['ui']['msg:order.none'] = "You haven't yet placed an order for this cycle. <a href = '".DIR_WEB."/members/order/new/'>Create order &raquo;</a>";
 $lang['ui']['msg:order_products_none'] = 'There are currently no products for sale.';
 $lang['ui']['info:inventory_unlimited'] = 'Unlimited';
 $lang['ui']['lbl:product'] = 'Product';
 $lang['ui']['lbl:available'] = '# Available';
 $lang['ui']['info:order_cycle_next'] = 'The next available order cycle starts ';
-# Removed because I think it's only used on the members/order/view page & it's not really appropriate there
-#$lang['ui']['info:order_cycle_none'] = 'There is no order cycle currently running.';
+$lang['ui']['info:order_cycle_none'] = 'There is no order cycle currently running.';
 $lang['ui']['info:no_past_orders'] = 'You have no orders to view.';
 $lang['ui']['info:no_past_order_summaries'] = 'You have no order summaries to view.';
 $lang['ui']['msg:order_saved'] = 'Order saved';
@@ -284,7 +285,7 @@ $lang['ui']['lbl:summary_num'] = 'Summary #';
 $lang['ui']['btn:download'] = 'Download';
 
 
-$lang['ui']['msg:order_placed'] = 'Your order has been placed. <a href = "'.DIR_WEB.'/members/order/view/?id=%ID%">View/Change your order</a>';
+$lang['ui']['msg:order_placed'] = 'Your order has been placed.  It can be changed until %TIME%. <a href = "'.DIR_WEB.'/members/order/view/?id=%ID%">View/Change your order</a>';
 $lang['ui']['btn:order_place'] = 'Place order';
 $lang['ui']['btn:order_update'] = 'Update order';
 $lang['ui']['btn:order_edit'] = 'Edit order';
@@ -340,6 +341,8 @@ $lang['ui']['info:no_members'] = 'No members found';
 $lang['ui']['ttl:list_producers'] = 'Producers';
 $lang['ui']['info:no_producers'] = 'No producers found';
 
+# Homepage
+$lang['ui']['ttl:homepage']	= 'Edit homepage';
 
 
 ?>

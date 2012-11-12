@@ -60,6 +60,7 @@ $lang['err']['product.load.fail'] = 'Product could not be loaded due to a databa
 $lang['err']['product.category.load.fail'] = 'The Categories for the Product could not be loaded due to a database error.';
 $lang['err']['product.load.none'] = 'Product could not be loaded because no product #%NUMBER% exists.';
 $lang['err']['products.load.error'] = 'Products could not be loaded due to a database error.';
+$lang['err']['products.load.categories.error'] = 'Product categories could not be loaded due to a database error.';
 
 $lang['err']['product.create.no_producer'] = 'Product could not be created because the provided producer #%NUMBER% does not exist.';
 $lang['err']['product.create.fail'] = 'Product could not be created due to a database error.';
@@ -110,7 +111,6 @@ $lang['err']['cycle.load.error'] = 'The cycle with ID #%ID% could not be loaded 
 $lang['err']['cycle.load_categories.fail'] = 'The categories for the Cycle could not be loaded due to a database error.';
 $lang['err']['cycle.load.no_exist'] = 'The cycle with ID #%ID% could not be loaded because it does not exist.';
 $lang['err']['cycle.create.overlap.error'] = 'The cycle could not be created because the check to determine overlap failed.';
-$lang['err']['cycle.create.overlap'] = 'The cycle could not be created because there is already an existing cycle during that time.';
 $lang['err']['cycle.create.error'] = 'Cycle could not be created due to a database error.';
 $lang['err']['cycle.create.name.empty'] = 'Please provide a name.';
 $lang['err']['cycle.create.no_start'] = 'Please provide a start date.';
@@ -171,13 +171,14 @@ $lang['err']['order.exists'] = 'You have already placed an order for this order 
 $lang['err']['order.amounts.load.fail'] = 'Unable to load your orders due to a database error';
 $lang['err']['order.decriment.fail'] = 'Unable to reduce the inventory total to reflect your order.';
 $lang['err']['order.not_yours'] = "The requested Order doesn't belong to you.";
-$lang['err']['order.load.fail'] = 'Unable to load your order.';
+$lang['err']['order.load.fail'] = 'Unable to load your order due to a database error: %ERROR%';
 $lang['err']['order.load.none'] = 'Unable to load your order - it does not exist.';
 $lang['err']['order.generate_invoice.fail'] = 'The invoice for Order #%ID% could not be created.';
 
 $lang['err']['order.delete.fail'] = 'Existing order could not be deleted due to a database error.';
 $lang['err']['order.increment.fail'] = 'Unable to reset product inventory amounts after order was deleted.';
 $lang['err']['cycles_load_fail'] = 'Current ordering cycles could not be loaded due to a database error';
+$lang['err']['order.time_placed.fail'] = 'The order was placed, but Natura was unable to determine when it was placed.';
 
 // this value should be duplicated in ui.inc
 $lang['err']['order.edit_window.expired'] = 'You cannot update this order because it was first placed more than 24 hours ago';
