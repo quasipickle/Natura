@@ -19,7 +19,10 @@
 			<?php Lang::out('lbl:business_email'); ?>
 		</label>
 		<input type = "text" name = "business_email" value = "<?php echo htmlentities($this->business_email); ?>" />
-		<span class = "label label-info"><?php Lang::out('info:optional'); ?></span>
+		
+		<span class = "help-inline">
+			<span class = "label label-info"><?php Lang::out('info:optional'); ?></span>
+		</span>
 		<span class = "help-inline">
 			<?php Lang::out('info:business_email'); ?>
 		</span>
@@ -29,7 +32,9 @@
 			<?php Lang::out('lbl:business_phone'); ?>
 		</label>
 		<input type = "text" name = "business_phone" value = "<?php echo htmlentities($this->business_phone); ?>" />
-		<span class = "label label-info"><?php Lang::out('info:optional'); ?></span>
+		<span class = "help-inline">
+			<span class = "label label-info"><?php Lang::out('info:optional'); ?></span>
+		</span>
 		<span class = "help-inline"><?php Lang::out('info:business_phone'); ?></span>
 	</div>
 	<div class = "form-actions">
