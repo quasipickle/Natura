@@ -11,7 +11,10 @@ class Order
 	public $id;
 	public $DB;
 	public $Cycle;
-	public $time_placed = 0;
+	public $time_placed = 0; //MySQL datetime format
+	public $time_placed_stamp = 0; // UNIX format
+	public $time_edit_until = 0; // MySQL datetime format
+	public $time_edit_until_stamp = 0;// UNIX format
 	public $loaded = FALSE;
 	
 	//Member who placed the order.  Populated by load();
@@ -36,9 +39,15 @@ class Order
 	{
 		$query = <<<SQL
 			SELECT
-				`members`.*,
-				`products`.`id` as `product_id`,
+				`members`.`id`,
+				`members`.`email`,
+				`members`.`first_name`,
+				`members`.`last_name`,
+				`members`.`phone`,
+				`products`.`id` AS `product_id`,
 				`products`.`name`,
+				`products`.`units`,
+				`producers`.`name` AS `producer_name`,
 				`orders`.`time_placed`,
 				`orders`.`cycle_id`,
 				`order_items`.`price`,
@@ -47,39 +56,46 @@ class Order
 				`members`,
 				`orders`,
 				`order_items`,
-				`products`
+				`products`,
+				`producers`
 			WHERE
 				`orders`.`id` = '$this->id' AND
 				`order_items`.`order_id` = '$this->id' AND	
 				`members`.`id` = `orders`.`member_id` AND
-				`order_items`.`product_id` = `products`.`id`
+				`order_items`.`product_id` = `products`.`id` AND
+				`products`.`producer_id` = `producers`.`member_id`
 SQL;
 		$Result = $this->DB->execute($query);
 		if(!$Result)
 		{
-			Error::set('order.load.fail');
+			Error::set('order.load.fail',array('%ERROR%'=>$this->DB->error()));
 			return FALSE;
 		}
 		else
 		{
+			
 			if($Result->numRows() > 0)
 			{
 				foreach($Result as $Row)
 				{
-					$this->time_placed_stamp = strtotime($Row->time_placed);//time_placed is MySQL datetime stamp
-					$this->time_placed = $Row->time_placed;
 					$this->Cycle = new Cycle($Row->cycle_id);
+					$this->setTimes($Row->time_placed);
 	
-					$Item = new stdClass();
-					$Item->product_id = $Row->product_id;
-					$Item->product_name = $Row->name;
-					$Item->price = $Row->price;
-					$Item->count = $Row->count;
+					$Item = new _(array(
+						'product_id'    => $Row->product_id,
+						'producer_name' => $Row->producer_name,
+						'product_name'  => $Row->name,
+						'price'         => $Row->price,
+						'count'         => $Row->count,
+						'units'			=> $Row->units
+					));
 					
 					$this->items[$Row->product_id] = $Item;
 				}
 				
-				//member info will be included in every row, so we can load it from last row
+				
+				
+				//member info will be included in every row, so we can load it from just the last row
 				$this->Member 				= new Member();
 				$this->Member->id			= $Row->id;
 				$this->Member->email 		= $Row->email;
@@ -130,10 +146,12 @@ SQL;
 				unset($item_list[$product_id]);
 		}
 		
+		# Create Cycle
+		$this->Cycle = new Cycle($cycle_id);
+		
 		# generate queries early, so we don't have to wait for them
 		# to be generated while the tables are locked
 		$order_queries = $this->createOrderQueries($item_list,$cycle_id);	
-		
 		
 		$this->lockTables();
 		$this->startTransaction();
@@ -144,7 +162,7 @@ SQL;
 			$order_success = $this->createOrder($item_list,$order_queries);
 		else
 			$order_success = $this->updateOrder($item_list,$order_queries);
-		
+			
 		$this->endTransaction($order_success);
 		$this->unlockTables();
 		
@@ -177,6 +195,7 @@ SQL;
 	{
 		# Create the order
 		$Result = $this->DB->execute($queries['order']);
+		
 		if($Result)
 		{
 			$order_id = $this->DB->lastInsertID();
@@ -189,6 +208,13 @@ SQL;
 				{
 					$this->id = $order_id;
 					$this->items = $item_list;
+					
+					$time_query = "SELECT `time_placed` FROM `orders` WHERE `id` = '$order_id'";
+					try{ $TimeResult = $this->DB->execute($time_query); }
+					catch(Exception $e){ Error::set('order.time_placed.fail'); return FALSE; }
+					$Row = $TimeResult->getRow();
+					$this->setTimes($Row->time_placed);
+					
 					return TRUE;
 				}
 				else//if count query failed
@@ -253,6 +279,22 @@ SQL;
 		return FALSE;
 	}
 	
+	
+	##
+	# Function: setTimes()
+	# Purpose: To set the creation and edit deadline times
+	# Parameters: $time - 
+	# Returns: Nothing
+	#
+	public function setTimes($time)
+	{
+		$this->time_placed_stamp	 = strtotime($time); // UNIX timestamp	
+		$this->time_placed 			 = $time; // MySQL datetime stamp		
+		$this->time_edit_until_stamp = (strtotime('+24 hours',$this->time_placed_stamp) > $this->Cycle->end_stamp)
+										? $this->Cycle->end_stamp
+										: strtotime('+24 hours',$this->time_placed_stamp);
+		$this->time_edit_until		 = date('Y-m-d H:i:s',$this->time_edit_until_stamp);
+	}
 	##
 	# Function: inEditWindow()
 	# Purpose: To determine if this order was initially placed within the
@@ -263,7 +305,10 @@ SQL;
 	#
 	public function inEditWindow()
 	{
-		if($this->time_placed != 0 && $this->time_placed < strtotime('-24 hours',time()))
+		
+	
+	
+		if($this->time_placed != 0 && $this->time_edit_until_stamp <= time())
 			return FALSE;
 		else
 			return TRUE;
@@ -569,40 +614,33 @@ SQL;
 	##
 	# Function: generateInvoice()
 	# Purpose: To generate an invoice file for this order
-	# Parameters: $type ("txt" || "csv"): the format of the file
+	# Parameters: Whether to tell the template file to force download or not
 	# Returns: The filename of the generated file, or FALSE if something went wrong
 	##
-	public function generateInvoice($type = 'txt')
+	public function generateInvoice($download = FALSE)
 	{
-		$Order = new stdClass();
-		$Order->id					= $this->id;
-		$Order->member_first_name 	= $this->Member->first_name;
-		$Order->member_last_name 	= $this->Member->last_name;
-		$Order->total 				= $this->total;
-		$Order->items 				= $this->items;
+		$Order 						= new _(array(
+			'id'                => $this->id,
+			'member_first_name' => $this->Member->first_name,
+			'member_last_name'  => $this->Member->last_name,
+			'time_placed'		=> $this->time_placed,
+			'total'             => $this->total,
+			'items'             => $this->items
+		));
 		
-		$TPL = new Template();
-		$TPL->Order = $Order;
-		$output = ($type == 'txt') 
-					? $TPL->fetch('summary.txt.tpl.php')
-					: $TPL->fetch('summary.csv.tpl.php');
+		$filename = 'invoice - '.$Order->member_last_name.', '.$Order->member_first_name.'.xls';
+		$filename = cleanFilename($filename);
+		$filename = ($download) ? $filename : DIR_TMP.'/'.$filename;		
 		
-	
-		$filename = 'invoice - '.$Order->member_last_name.', '.$Order->member_first_name;
-		$filename = ($type == 'txt')
-					? DIR_TMP.'/'.$filename.'.txt'
-					: DIR_TMP.'/'.$filename.'.csv';
-					
-		if(FALSE === file_put_contents($filename,$output))
+		include_once DIR_TEMPLATE.'/invoice.php';
+		if(__generateInvoice($Order,$filename,$download))
+			return $filename;
+		else
 		{
-			Error::set('order.generate_invoice.fail',array('%ID%',$Order->id));
+			Error::set('order.generate_invoice.fail',array('%ID%'=>$Order->id));
 			return FALSE;
 		}
-		else
-			return $filename;
 	}
-		
-	
 	
 	public function __get($name)
 	{
