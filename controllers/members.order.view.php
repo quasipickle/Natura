@@ -1,6 +1,4 @@
 <?PHP
-require DIR_CLASS.'/Cycle.php';
-require DIR_CLASS.'/Order.php';
 
 class PageController extends Controller
 {
@@ -14,8 +12,8 @@ class PageController extends Controller
 	public function setup()
 	{
 		$this->TPL->assign(array(
-			'viewing_order'		=> TRUE,
 			'member_page'		=> TRUE,
+			'viewing_order'		=> TRUE,
 			'orders'			=> FALSE,
 			'order_id'			=> FALSE,
 			'order_saved'		=> (isset($_GET['saved'])),
@@ -23,11 +21,9 @@ class PageController extends Controller
 			)
 		);
 		
-		$this->Member = new Member(Session::get(array('member','id')));
-			
+		$this->Member = new Member(Session::get(array('member','id')));		
 		parent::setup();
 	
-		
 	}
 	
 	public function process()
@@ -60,10 +56,10 @@ class PageController extends Controller
 			$Item = new stdClass();
 			$Item->count = $count;
 			$list[$product_id] = $Item;
-		}
+		}	
 		
 		$Order = new Order($_POST['id']);
-			
+		
 		# Order will fail to load if user reloads page - their
 		# old order id no longer exists.  However, reloading
 		# doesn't result in any new changes, so just silently do nothing
@@ -73,7 +69,7 @@ class PageController extends Controller
 		}
 		else
 		{
-			if($Order->save($list,$this->cycle_id))
+			if($Order->save($list,$Order->Cycle->id))
 			{
 				//redirect user to page for new order ID
 				header('Location: '.SITE_URL.'/members/order/view/?id='.$Order->id.'&saved');
@@ -83,6 +79,7 @@ class PageController extends Controller
 		}
 	}
 	
+	/* Load all the products available for the order cycle this order was placed in */
 	public function loadProducts()
 	{
 		$DB = DB::getInstance();
@@ -90,11 +87,6 @@ class PageController extends Controller
 		$query = <<<SQL
 			SELECT
 				`products`.`id`,
-				`products`.`name`,
-				`products`.`description`,
-				`products`.`price`,
-				`products`.`units`,
-				`products`.`count`,
 				`products`.`producer_id`,
 				`producers`.`name` AS 'producer_name'
 			FROM 
@@ -124,29 +116,7 @@ SQL;
 		}
 		else if($Result->numRows() != 0)
 		{
-			$products = array();
-			
-			foreach($Result as $Row)
-			{
-				if(!isset($products[$Row->producer_id]))
-				{
-					$products[$Row->producer_id] = new _(array(
-							'name'     =>$Row->producer_name,
-							'products' =>array()
-						));
-				}
-				
-				$products[$Row->producer_id]->products[$Row->id] = new _(array(
-						'id'			=>$Row->id,
-						'name'			=>$Row->name,
-						'description'	=>$Row->description,
-						'price'			=>$Row->price,
-						'units'			=>$Row->units,
-						'count'			=>$Row->count
-					));				
-			}
-			
-			$this->TPL->products = $products;
+			$this->TPL->products  = generateOrderProductList($Result);//in funclib.php
 		}
 	}
 	
@@ -207,7 +177,8 @@ SQL;
 			else
 			{
 				$this->order_id = $order_id;
-				$this->cycle_id = $Order->cycle_id;
+				$this->cycle_id = $Order->Cycle->id;
+				
 				$this->TPL->assign(array(
 					'order_id'				=>$Order->id,
 					'order_can_be_updated'	=>$Order->inEditWindow(),
@@ -235,12 +206,12 @@ SQL;
 				'member_last_name'  =>$Order->Member->last_name
 			));
 		}
+		return $Order;
 	}
 	
 	private function downloadOrder()
 	{
-		$this->loadPastOrder($this->order_id,'order');
-		$this->template = 'summary.txt.tpl.php';
-		$this->TPL->download = TRUE;
+		$Order = $this->loadPastOrder($this->order_id,'order');
+		$Order->generateInvoice(TRUE);# TRUE forces download
 	}	
 }
