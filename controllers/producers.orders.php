@@ -1,8 +1,4 @@
 <?PHP
-
-require DIR_CLASS.'/Cycle.php';
-require DIR_CLASS.'/Producer.php';
-
 class PageController extends Controller
 {
 	public $page_level = LEVEL_PRODUCER;
@@ -19,21 +15,13 @@ class PageController extends Controller
 			'download'				=>FALSE,
 		));
 
-		$this->loadOrders();
-
 		if(isset($_GET['download']))
-		{
-			$this->template = 'orders.'.$_GET['format'].'.tpl.php';
-			
-			# default to txt format if requested format doesn't exist
-			if(!file_exists(realpath(DIR_TEMPLATE.'/'.$this->template)))
-				$this->template = 'orders.txt.tpl.php';
-				
-			$this->TPL->download = TRUE;
-		
-		}
+			$this->downloadPO();
 		else
+		{
+			$this->loadOrders();
 			$this->loadOldCycles();
+		}
 	}
 	
 	public function loadOrders()
@@ -44,10 +32,10 @@ class PageController extends Controller
 		
 		if(isset($_GET['cycle']))
 		{
-			$cycle_id = cleanGPC($_GET['cycle']);
-			$Cycle = new Cycle($cycle_id);
+			$this->cycle_id = cleanGPC($_GET['cycle']);
+			$Cycle = new Cycle($this->cycle_id);
 			$Producer->loadOrderAmounts($Cycle->id);
-			$this->TPL->assign(array(
+			$orders_info = array(
 				'producer_name'		=>$Producer->business_name,
 				'cycle_id'			=>$Cycle->id,
 				'cycle_name'		=>$Cycle->name,
@@ -56,10 +44,10 @@ class PageController extends Controller
 				'amounts'			=>$Producer->orders,
 				'active_cycle'		=>$Cycle->isActive(),
 				'order_grand_total'	=>$Producer->order_grand_total
-			));
+			);
+			
+			$this->TPL->assign($orders_info);
 		}
-		
-		
 	}	
 	
 	##
@@ -110,6 +98,15 @@ SQL;
 			}
 			$this->TPL->old_cycles = $old_cycles;
 		}
+	}
+	
+	public function downloadPO()
+	{
+		$this->cycle_id = cleanGPC($_GET['cycle']);
+		$Cycle = new Cycle($this->cycle_id);
+		
+		$Producer = new Producer(Session::get(array('member','id')));
+		$Producer->generatePurchaseOrder($Cycle,TRUE);
 	}
 }
 	
