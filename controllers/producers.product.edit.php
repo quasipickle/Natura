@@ -48,16 +48,28 @@ class PageController extends Controller
 			
 			if($Product->edit())
 			{
-				$this->TPL->assign(array(
-					'name'			=>$Product->name,
-					'description'	=>$Product->description,
-					'units'			=>$Product->units,
-					'price'			=>$Product->price,
-					'count'			=>$Product->count,
-					'categories'	=>$Product->categories,
-					'edit_success'	=>TRUE
-					)
-				);
+				if(!isset($_GET['ajax']))
+					$this->TPL->assign(array(
+						'name'			=>$Product->name,
+						'description'	=>$Product->description,
+						'units'			=>$Product->units,
+						'price'			=>$Product->price,
+						'count'			=>$Product->count,
+						'categories'	=>$Product->categories,
+						'edit_success'	=>TRUE
+						)
+					);
+				else
+				{
+					echo json_encode(array('ok'=>TRUE));
+					exit();
+				}
+			}
+			//if there was an error & the page is being called via ajax
+			elseif(isset($_GET['ajax']))
+			{
+				echo json_encode(array('ok'=>FALSE,'error'=>Error::get()));
+				exit();
 			}
 		}
 	}
