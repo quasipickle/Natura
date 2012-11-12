@@ -168,7 +168,7 @@ SQL;
 			{
 				$Row = $Result->getRow();
 				$this->member_id = $Row->id;
-				return TRUE;
+				return $this->member_id;
 			}
 		}
 	}
