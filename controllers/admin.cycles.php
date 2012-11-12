@@ -13,7 +13,6 @@ class PageController extends AdminController
 			'create_failure'	=> FALSE,
 			'end'				=>'',
 			'emails_sent'		=>FALSE
-			
 		));		
 		parent::setup();
 	}
@@ -63,7 +62,7 @@ class PageController extends AdminController
 	}
 	
 	
-	private function downloadFiles($type = 'txt')
+	private function downloadFiles()
 	{	
 		$cycle_id = cleanGPC($_POST['cycle']);
 		$Cycle = new Cycle($cycle_id);
@@ -83,7 +82,7 @@ class PageController extends AdminController
 			foreach($Cycle->members as $Member)
 			{
 				$Order = $Member->loadOrder($cycle_id,'cycle');
-				$file = $Order->generateInvoice($type);
+				$file = $Order->generateInvoice();
 				if($file)
 					$files[] = $file;
 			}
@@ -91,7 +90,8 @@ class PageController extends AdminController
 			# Generate the purchase orders
 			foreach($Cycle->producers as $Producer)
 			{
-				$file = $Producer->generatePurchaseOrder($Cycle,$type);
+				$file = $Producer->generatePurchaseOrder($Cycle,FALSE);
+				
 				if($file)
 					$files[] = $file;
 			}
@@ -99,7 +99,7 @@ class PageController extends AdminController
 			# Add the files to the zip file
 			if(!class_exists('ZipArchive'))
 				Error::set('zip.library_missing');
-			else
+			elseif(!Error::s())
 			{
 				$Zip = new ZipArchive();
 				$filename = DIR_TMP.'/cycle_'.$cycle_id.'.zip';
