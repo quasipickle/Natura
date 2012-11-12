@@ -22,7 +22,6 @@ body > #body { height: auto; min-height: 100%; }
 /* Bootstrap shims */
 .navbar .container{ width:auto; }
 .navbar-inner{ border-radius:0; }
-.help-inline.label{ padding-left:5px; padding-right:5px; }
 .navbar + .subnav{ margin-top:-18px; margin-bottom:18px;}
 table form{ margin: 0; }
 .btn-group{ display:inline-block; margin:0;}
@@ -59,10 +58,6 @@ label.checkbox{ display:inline-block; }
 }
 
 
-
-
-
-
 /* Pulled from the Bootstrap docs */
 .subnav {
     background-color: #EEEEEE;
@@ -71,7 +66,6 @@ label.checkbox{ display:inline-block; }
     background-image: linear-gradient(center top , #F5F5F5 0%, #EEEEEE 100%);
     border: 1px solid #D5D5D5;
     border-width: 0 0 1px;
-    height: 36px;
     width: 100%;
     box-shadow: 0 1px 0 #FFFFFF inset, 0 1px 5px rgba(0, 0, 0, 0.1);
     font-weight:900;
@@ -118,20 +112,24 @@ label.checkbox{ display:inline-block; }
 h1{ margin-bottom:0.5em; }
 label.checkbox{ cursor:pointer; }
 	label.checkbox:hover{ color:#000; }
-table.table tbody tr:hover td{
-	background-color:#e0f2ff;
-}
+table.table tbody tr:hover td{ background-color:#e0f2ff; }
+small{ font-size: 80%; line-height:100%; }
 
-/*
- * General layout classes
- */
-.hidden{ display:none; }
+
+.table-inline-form input{
+	margin-bottom:0;
+}
 
 /*
  * Login form
  */
 #login-form{ width:250px; }
 
+
+/*
+ * Order form
+ */
+#products a[class*="products"]{ margin-left:1em; font-weight:400; }
 
 .approve-pending{
 	background-color:#F04;
