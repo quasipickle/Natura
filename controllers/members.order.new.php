@@ -1,11 +1,10 @@
 <?PHP
-require DIR_CLASS.'/Cycle.php';
-require DIR_CLASS.'/Order.php';
 
 class PageController extends Controller
 {
 	public $page_level = LEVEL_MEMBER;
 	public $active_cycle = FALSE;
+	public $already_ordered = FALSE;
 	public $template = 'members.order.new.tpl.php';
 	
 	public function setup()
@@ -32,11 +31,14 @@ class PageController extends Controller
 			
 		if($this->active_cycle)
 		{
-			$this->TPL->active_cycle = $this->active_cycle;
-			$Cycle                   = new Cycle($this->active_cycle);
-			$this->already_ordered   = $this->orderPlaced($Cycle);
+			$this->TPL->active_cycle    = $this->active_cycle;
+			$Cycle                      = new Cycle($this->active_cycle);
+			$this->already_ordered      = $this->orderPlaced($Cycle);
+			$this->TPL->already_ordered = $this->already_ordered;		
 		}
-		$this->loadProducts();
+		
+		if(!$this->already_ordered)
+			$this->loadProducts();
 	}
 	
 	public function process()
@@ -58,6 +60,7 @@ class PageController extends Controller
 			if($Order->save($list,$Cycle->id))
 			{
 				$this->TPL->order_id      = $Order->id;
+				$this->TPL->order_edit_until_stamp = $Order->time_edit_until_stamp;
 				$this->TPL->order_created = TRUE;
 			}
 			else
@@ -104,23 +107,21 @@ SQL;
 			$query = <<<SQL
 				SELECT
 					`products`.`id`,
-					`products`.`name`,
-					`products`.`description`,
-					`products`.`price`,
-					`products`.`units`,
-					`products`.`count`,
+					`c`.`name_hr`,
 					`products`.`producer_id`,
-					`producers`.`name` as 'producer_name' 
+					`producers`.`name` AS 'producer_name' 
 				FROM 
 					`products`,
 					`producers`,
-					`cycle_categories` as `cc`,
-					`product_categories` as `pc`
+					`categories`		 AS `c`,
+					`cycle_categories`   AS `cc`,
+					`product_categories` AS `pc`
 				WHERE 
 					(`count` > 0 OR `count` IS NULL) AND 
 					`active` = 1 AND 
 					`products`.`producer_id` = `producers`.`member_id` AND
 					`cc`.`cycle_id` = '$active_cycle' AND
+					`c`.`id` = `cc`.`category_id` AND
 					`cc`.`category_id` = `pc`.`category_id` AND
 					`products`.`id` = `pc`.`product_id`
 				GROUP BY
@@ -133,35 +134,13 @@ SQL;
 			$Result = $DB->execute($query);
 			if(!$Result)
 			{
+				echo $DB->error();
 				Error::set('order.products.load.error');
 				return FALSE;
 			}
 			else if($Result->numRows() != 0)
 			{
-				$products = array();
-				
-				foreach($Result as $Row)
-				{
-					if(!isset($products[$Row->producer_id]))
-					{
-						$products[$Row->producer_id] = new _(array(
-								'name'=>$Row->producer_name,
-								'products'=>array()
-							));
-					}
-					
-					$products[$Row->producer_id]->products[] = new _(array(
-							'id'			=>$Row->id,
-							'name'			=>$Row->name,
-							'description'	=>$Row->description,
-							'price'			=>$Row->price,
-							'units'			=>$Row->units,
-							'count'			=>$Row->count
-						));			
-				}
-	
-				
-				$this->TPL->products = $products;
+				$this->TPL->products = generateOrderProductList($Result);//in funclib.php
 			}
 		}
 	}
@@ -188,9 +167,13 @@ SQL;
 				`cycle_id` = '$cycle_id' AND
 				`member_id` = '$member_id'
 SQL;
+
 		$Result = $DB->execute($query);
 		if($Result && $Result->numRows() > 0)
-			return TRUE;
+		{
+			$Row = $Result->getRow();
+			return $Row->id;
+		}
 		else
 			return FALSE;
 	}
