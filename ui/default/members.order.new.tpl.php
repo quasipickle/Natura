@@ -15,7 +15,7 @@
 <?php endif;
 if($this->order_created): ?>
 	<div class = "alert alert-success">
-		<?php Lang::out('msg:order_placed',array('%ID%'=>$this->order_id)); ?>
+		<?php Lang::out('msg:order_placed',array('%ID%'=>$this->order_id,'%TIME%'=>date('Y-m-d h:i:s A',$this->order_edit_until_stamp))); ?>
 	</div>
 <?php endif; ?>
 <?php if($this->active_cycles): ?>
@@ -35,7 +35,7 @@ if($this->order_created): ?>
 	</div>
 <?php endif;
 if($this->already_ordered)
-	Lang::out('msg:order_already');
+	Lang::out('msg:order_already',array('%ID%'=>$this->already_ordered));
 elseif($this->products)
 	include 'order_form.tpl.php';
 ?>
