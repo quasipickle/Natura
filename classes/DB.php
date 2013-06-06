@@ -77,7 +77,7 @@ class DB
 			# Flush any (empty) result sets
 			if($multi)
 			{
-				while($this->mysqli->next_result()) 
+				while($this->mysqli->more_results() && $this->mysqli->next_result()) 
 					$this->mysqli->store_result();
 			}
 			return TRUE;
