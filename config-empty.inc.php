@@ -37,7 +37,13 @@ define('LANG','en');
 # Important: No slashes
 define('TEMPLATE','default');
 
-
+#######
+# Order change expiry
+#
+# The number of minutes after an order is placed, that it can still be edited
+# Zero (0) means no limit
+#######
+define('ORDER_EDITABLE_WINDOW',0);
 
 #######
 # Database
