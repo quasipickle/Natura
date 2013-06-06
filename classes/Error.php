@@ -66,7 +66,7 @@ class Error
 	# Function: get()
 	# Purpose: To return the encountered error
 	#
-	public function get()
+	public static function get()
 	{
 		return self::$encountered;
 	}
