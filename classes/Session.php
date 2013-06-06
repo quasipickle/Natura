@@ -21,7 +21,7 @@ class Session
 	 *							that "deep" var is set.
 	 * Returns: TRUE or FALSE
 	 */					
-	public function exists($name=FALSE)
+	public static function exists($name=FALSE)
 	{
 		if($name === FALSE)
 		{		
@@ -61,7 +61,7 @@ class Session
 	 *
 	 * Returns: Nothing
 	 */	
-	public function destroy($name=FALSE)
+	public static function destroy($name=FALSE)
 	{
 		if($name === FALSE)
 			unset($_SESSION[SESSION_KEY]);
@@ -84,7 +84,7 @@ class Session
 	 *
 	 * Returns: Found value, or NULL if value not found
 	 */	
-	public function get($name)
+	public static function get($name)
 	{
 		if(is_string($name))
 		{
@@ -111,7 +111,7 @@ class Session
 	 *
 	 * Returns: Nothing
 	 */	
-	public function set($name,$value)
+	public static function set($name,$value)
 	{
 		if(!self::exists())
 			$_SESSION[SESSION_KEY] = array();
@@ -136,7 +136,7 @@ class Session
 	 *
 	 * Returns: The value if found, NULL if not
 	 */	
-	private function findDeepVar($name)
+	private static function findDeepVar($name)
 	{
 		$property = $_SESSION[SESSION_KEY][$name[0]];
 		array_shift($name);
