@@ -287,13 +287,17 @@ SQL;
 	# Returns: Nothing
 	#
 	public function setTimes($time)
-	{
+	{	
 		$this->time_placed_stamp	 = strtotime($time); // UNIX timestamp	
-		$this->time_placed 			 = $time; // MySQL datetime stamp		
-		$this->time_edit_until_stamp = (strtotime('+24 hours',$this->time_placed_stamp) > $this->Cycle->end_stamp)
-										? $this->Cycle->end_stamp
-										: strtotime('+24 hours',$this->time_placed_stamp);
-		$this->time_edit_until		 = date('Y-m-d H:i:s',$this->time_edit_until_stamp);
+		$this->time_placed 			 = $time; // MySQL datetime stamp
+		if(ORDER_EDITABLE_WINDOW != 0)
+		{
+			$window_as_string = '+ '.ORDER_EDITABLE_WINDOW.' minutes';
+			$this->time_edit_until_stamp = (strtotime($window_as_string,$this->time_placed_stamp) > $this->Cycle->end_stamp)
+											? $this->Cycle->end_stamp
+											: strtotime($window_as_string,$this->time_placed_stamp);
+			$this->time_edit_until		 = date('Y-m-d H:i:s',$this->time_edit_until_stamp);
+		}
 	}
 	##
 	# Function: inEditWindow()
@@ -305,8 +309,9 @@ SQL;
 	#
 	public function inEditWindow()
 	{
-		
-	
+		//0 means no window - always editable
+		if($this->time_edit_until_stamp == 0)
+			return TRUE;
 	
 		if($this->time_placed != 0 && $this->time_edit_until_stamp <= time())
 			return FALSE;
