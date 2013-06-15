@@ -4,7 +4,12 @@
 	<?php Lang::out('ttl:new_order'); ?>
 </h1>
 <p>
-	<?php Lang::out('info:order'); ?>
+	<?php
+		if(ORDER_EDITABLE_WINDOW === 0)
+			Lang::out('info:order_no_window');
+		else
+			Lang::out('info:order');
+	?>
 </p>
 <?php if(isset($this->error)): ?>
 	<div class = "alert alert-error">
