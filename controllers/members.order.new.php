@@ -59,9 +59,9 @@ class PageController extends Controller
 			$Order = new Order();
 			if($Order->save($list,$Cycle->id))
 			{
-				$this->TPL->order_id      = $Order->id;
+				$this->TPL->order_id               = $Order->id;
 				$this->TPL->order_edit_until_stamp = $Order->time_edit_until_stamp;
-				$this->TPL->order_created = TRUE;
+				$this->TPL->order_created          = TRUE;
 			}
 			else
 				$this->TPL->ordered_items = $list;
