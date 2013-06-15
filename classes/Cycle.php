@@ -48,12 +48,12 @@ SQL;
 			Error::set('cycle.load.no_exist',array('%ID%'=>$this->id));
 		else
 		{
-			$Row = $Result->getRow();
-			$this->name = $Row->name;
-			$this->start = $Row->start;
+			$Row               = $Result->getRow();
+			$this->name        = $Row->name;
+			$this->start       = $Row->start.' 00:00:00';
 			$this->start_stamp = strtotime($this->start);
-			$this->end = $Row->end;
-			$this->end_stamp = strtotime($this->end);
+			$this->end         = $Row->end.' 23:59:59';
+			$this->end_stamp   = strtotime($this->end);
 		}
 		
 		$this->loadCategories();
@@ -132,7 +132,7 @@ SQL;
 	{
 		if(count($this->categories))
 		{
-			$db_id = $this->DB->escape($this->id);
+			$db_id      = $this->DB->escape($this->id);
 			$categories = array_keys($this->categories);
 			$categories = array_map(array($this->DB,'escape'),$categories);		
 			
@@ -292,9 +292,9 @@ SQL;
 			$Row 				= $Result->getRow();
 			$this->id 			= $Row->id;
 			$this->name 		= $Row->name;
-			$this->start 		= $Row->start;
+			$this->start 		= $Row->start.' 00:00:00';
 			$this->start_stamp 	= strtotime($this->start);
-			$this->end 			= $Row->end;
+			$this->end 			= $Row->end.' 23:59:59';
 			$this->end_stamp 	= strtotime($this->end);
 			return TRUE;
 		}
@@ -327,9 +327,9 @@ SQL;
 			$Row = $Result->getRow();
 			$this->id 			= $Row->id;
 			$this->name 		= $Row->name;
-			$this->start 		= $Row->start;
+			$this->start 		= $Row->start.' 00:00:00';
 			$this->start_stamp 	= strtotime($this->start);
-			$this->end 			= $Row->end;
+			$this->end 			= $Row->end.' 23:59:59';
 			$this->end_stamp 	= strtotime($this->end);
 			return TRUE;
 		}
@@ -362,9 +362,9 @@ SQL;
 			$Row = $Result->getRow();
 			$this->id 			= $Row->id;
 			$this->name 		= $Row->name;
-			$this->start 		= $Row->start;
+			$this->start 		= $Row->start.' 00:00:00';
 			$this->start_stamp 	= strtotime($this->start);
-			$this->end 			= $Row->end;
+			$this->end 			= $Row->end.' 23:59:59';
 			$this->end_stamp 	= strtotime($this->end);
 			return TRUE;
 		}
