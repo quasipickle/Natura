@@ -45,6 +45,11 @@ define('TEMPLATE','default');
 #######
 define('ORDER_EDITABLE_WINDOW',0);
 
+# The human readable description of the ORDER_EDITABLE_WINDOW
+# Won't be used if ORDER_EDITABLE_WINDOW is zero
+# Ex: "24 hours", "1 week", etc
+define('ORDER_EDITABLE_WINDOW_HR',FALSE);
+
 #######
 # Database
 #
