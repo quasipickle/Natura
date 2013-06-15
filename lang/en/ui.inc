@@ -42,7 +42,7 @@ $lang['ui']['ttl:page'] = 'Welcome to';
 # Text to display as the title on the login page
 $lang['ui']['ttl:login'] = 'Please login';
 
-$lang['ui']['lbl:email'] = 'Email';
+$lang['ui']['lbl:email']    = 'Email';
 $lang['ui']['lbl:password'] = 'Password';
 
 $lang['ui']['ttl:unknown_page'] = 'Unknown page';
@@ -63,38 +63,38 @@ CAVEAT;
 
 
 # Tab wording after logging in
-$lang['ui']['menu:members'] = 'Members';
+$lang['ui']['menu:members']   = 'Members';
 $lang['ui']['menu:producers'] = 'Producers';
-$lang['ui']['menu:admin'] = 'Administration';
+$lang['ui']['menu:admin']     = 'Administration';
 
 #
 # Link text in tool bar
 #
 # Members
-$lang['ui']['menu:place_order'] = 'Place order';
+$lang['ui']['menu:place_order']        = 'Place order';
 $lang['ui']['menu:view_current_order'] = 'View your orders';
-$lang['ui']['menu:signup_producer'] = 'Signup as a Producer';
+$lang['ui']['menu:signup_producer']    = 'Signup as a Producer';
 
 # Producers
-$lang['ui']['menu:create_product'] = 'New product';
-$lang['ui']['menu:manage_products'] = 'Manage products';
-$lang['ui']['menu:view_purchase_orders'] = 'Purchase orders';
+$lang['ui']['menu:create_product']          = 'New product';
+$lang['ui']['menu:manage_products']         = 'Manage products';
+$lang['ui']['menu:view_purchase_orders']    = 'Purchase orders';
 $lang['ui']['menu:change_producer_profile'] = 'Edit your producer profile';
 
 
 # Admin
-$lang['ui']['menu:manage_cycles'] = 'Cycles';
-$lang['ui']['menu:manage_categories'] = 'Categories';
+$lang['ui']['menu:manage_cycles']       = 'Cycles';
+$lang['ui']['menu:manage_categories']   = 'Categories';
 $lang['ui']['menu:approve_memberships'] = 'Approve memberships';
-$lang['ui']['menu:approve_producers'] = 'Approve producers';
-$lang['ui']['menu:homepage'] = 'Homepage';
+$lang['ui']['menu:approve_producers']   = 'Approve producers';
+$lang['ui']['menu:homepage']            = 'Homepage';
 
 
 
 # Landing members page
-$lang['ui']['ttl:members'] = 'Members';
+$lang['ui']['ttl:members']   = 'Members';
 $lang['ui']['ttl:producers'] = 'Producers';
-$lang['ui']['ttl:admin'] = 'Administration';
+$lang['ui']['ttl:admin']     = 'Administration';
 
 
 #
@@ -132,16 +132,16 @@ You have successfully signed up.
 <br /><br />
 Once your membership has been approved, you will receive an email with further instructions.
 SIGNUP;
-$lang['ui']['lbl:member_first_name'] = 'First name';
-$lang['ui']['lbl:member_last_name'] = 'Last name';
-$lang['ui']['lbl:member_email'] = 'Email';
-$lang['ui']['lbl:member_confirm_email'] = 'Confirm email';
-$lang['ui']['lbl:member_password'] = 'Password';
-$lang['ui']['lbl:member_password_confirm'] = 'Confirm password';
-$lang['ui']['lbl:member_phone'] = 'Phone';
-$lang['ui']['info:fields_required'] = 'All fields are required.';
+$lang['ui']['lbl:member_first_name']          = 'First name';
+$lang['ui']['lbl:member_last_name']           = 'Last name';
+$lang['ui']['lbl:member_email']               = 'Email';
+$lang['ui']['lbl:member_confirm_email']       = 'Confirm email';
+$lang['ui']['lbl:member_password']            = 'Password';
+$lang['ui']['lbl:member_password_confirm']    = 'Confirm password';
+$lang['ui']['lbl:member_phone']               = 'Phone';
+$lang['ui']['info:fields_required']           = 'All fields are required.';
 $lang['ui']['info:fields_required_specified'] = 'All fields are required unless otherwise specified.';
-$lang['ui']['info:optional'] = 'Optional';
+$lang['ui']['info:optional']                  = 'Optional';
 
 # Signup as a producer
 $lang['ui']['btn:producer_signup'] = 'Become a producer';
@@ -257,9 +257,9 @@ $lang['ui']['info:cycle_category'] = 'Check as many categories as you want.  Onl
 
 
 # Ordering
-$lang['ui']['info:order'] = <<<ABOUT
-This page allows you to place an order for the current order cycle.  Your order can be changed for up to 24 hours after it is first placed, or until the order cycle closes - whichever occurs first.
-ABOUT;
+$lang['ui']['info:order'] = '
+This page allows you to place an order for the current order cycle.  Your order can be changed for up to '.ORDER_EDITABLE_WINDOW_HR.' after it is first placed, or until the order cycle closes - whichever occurs first.';
+$lang['ui']['info:order_no_window'] = 'This page allows you to place an order for the current order cycle.  Your order can be changed until the order cycle closes.';
 $lang['ui']['info:order_view'] = <<<ABOUT
 This page allows you to view and change an order you've already placed.  Your order can be changed for up to 24 hours after it is first placed, or until the order cycle closes - whichever occurs first.
 ABOUT;
