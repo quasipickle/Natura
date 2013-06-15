@@ -290,14 +290,16 @@ SQL;
 	{	
 		$this->time_placed_stamp	 = strtotime($time); // UNIX timestamp	
 		$this->time_placed 			 = $time; // MySQL datetime stamp
-		if(ORDER_EDITABLE_WINDOW != 0)
-		{
+		if(ORDER_EDITABLE_WINDOW != 0){
 			$window_as_string = '+ '.ORDER_EDITABLE_WINDOW.' minutes';
 			$this->time_edit_until_stamp = (strtotime($window_as_string,$this->time_placed_stamp) > $this->Cycle->end_stamp)
 											? $this->Cycle->end_stamp
 											: strtotime($window_as_string,$this->time_placed_stamp);
-			$this->time_edit_until		 = date('Y-m-d H:i:s',$this->time_edit_until_stamp);
 		}
+		else
+			$this->time_edit_until_stamp = $this->Cycle->end_stamp;
+
+		$this->time_edit_until		 = date('Y-m-d H:i:s',$this->time_edit_until_stamp);
 	}
 	##
 	# Function: inEditWindow()
